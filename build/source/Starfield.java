@@ -1,3 +1,19 @@
+import processing.core.*; 
+import processing.data.*; 
+import processing.event.*; 
+import processing.opengl.*; 
+
+import java.util.HashMap; 
+import java.util.ArrayList; 
+import java.io.File; 
+import java.io.BufferedReader; 
+import java.io.PrintWriter; 
+import java.io.InputStream; 
+import java.io.OutputStream; 
+import java.io.IOException; 
+
+public class Starfield extends PApplet {
+
 public final int NUM_NORM_PARTICLES = 50;
 public final int NUM_JUMBO_PARTICLES = 2;
 public final int NUM_ODD_PARTICLES = 1;
@@ -5,7 +21,7 @@ public final int NUM_ODD_PARTICLES = 1;
 public ArrayList<Particle> particles = new ArrayList<Particle>();
 
 public void setup() {
-	size(600,600);
+	
 	noStroke();
 	int c = color((int)(Math.random()*256), (int)(Math.random()*256), (int)(Math.random()*256));
 	addParticles(width/2, height/2, c);
@@ -135,4 +151,14 @@ public void addParticles(double x, double y, int c) {
 	for (int i = 0; i < NUM_ODD_PARTICLES; i++) {
 		particles.add(new OddballParticle(x,y,c));
 	}
+}
+  public void settings() { 	size(600,600); }
+  static public void main(String[] passedArgs) {
+    String[] appletArgs = new String[] { "Starfield" };
+    if (passedArgs != null) {
+      PApplet.main(concat(appletArgs, passedArgs));
+    } else {
+      PApplet.main(appletArgs);
+    }
+  }
 }
