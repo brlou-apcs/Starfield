@@ -14,6 +14,7 @@ import java.io.IOException;
 
 public class Starfield extends PApplet {
 
+// Final variables for the number of each particle in each spawn
 public final int NUM_NORM_PARTICLES = 50;
 public final int NUM_JUMBO_PARTICLES = 2;
 public final int NUM_ODD_PARTICLES = 1;
@@ -25,27 +26,29 @@ public void setup() {
 	
 	noStroke();
 	int c = color((int)(Math.random()*256), (int)(Math.random()*256), (int)(Math.random()*256));
-	addParticles(width/2, height/2, c);
+	addParticles(width/2, height/2, c); // Spawns initial particles in center of screen
 }
 
 public void draw() {
-	background(0);
+	background(0); // Resets background
 	for (int i = 0; i < particles.size(); i++) {
 		Particle p = particles.get(i);
 		p.show();
 		p.move();
 
-		if (p.rX() > width || p.rX() < 0 || p.rY() < 0 || p.rY() > height || (p.getNumMoves() >= 100 && p instanceof OddballParticle)) {
+		if (p.getX() > width || p.getX() < 0 || p.getY() < 0 || p.getY() > height || (p.getNumMoves() >= 100 && p instanceof OddballParticle)) {
 			particles.remove(i);
 		}
 	}
 }
 
+// Spawns more particles when mouse is pressed
 public void mousePressed() {
 	int c = color((int)(Math.random()*256), (int)(Math.random()*256), (int)(Math.random()*256));
 	addParticles(mouseX, mouseY, c);
 }
 
+// Switch case to change moveCase when key is pressed
 public void keyPressed() {
 	switch (key) {
 		case '1':
@@ -60,25 +63,26 @@ public void keyPressed() {
 	}
 }
 
+// Particle interface
 public interface Particle {
 	public abstract void show();
 	public abstract void move();
-	public abstract double rX();
-	public abstract double rY();
+	public abstract double getX();
+	public abstract double getY();
 	public abstract double getNumMoves();
 }
 
 public class NormalParticle implements Particle {
 
-	public double myX, myY, speed, angle;
-	public int numMoves, myC;
+	public double x, y, speed, angle;
+	public int numMoves, c;
 
 	public NormalParticle(double x, double y, int c) {
-		this.myX = x;
-		this.myY = y;
+		this.x = x;
+		this.y = y;
 		this.speed = Math.random()*10+1;
 		this.angle = Math.PI * 2 * Math.random();
-		this.myC = c;
+		this.c = c;
 	}
 
 	public void move() {
@@ -97,21 +101,22 @@ public class NormalParticle implements Particle {
 				break;
 		}
 
-		this.myX += Math.cos(this.angle) * this.speed;
-		this.myY += Math.sin(this.angle) * this.speed;
+		this.x += Math.cos(this.angle) * this.speed;
+		this.y += Math.sin(this.angle) * this.speed;
+
 	}
 
 	public void show() {
-		fill(this.myC);
-		ellipse((float)this.myX, (float)this.myY, 5, 5);
+		fill(this.c);
+		ellipse((float)this.x, (float)this.y, 5, 5);
 	}
 
-	public double rX() {
-		return this.myX;
+	public double getX() {
+		return this.x;
 	}
 
-	public double rY() {
-		return this.myY;
+	public double getY() {
+		return this.y;
 	}
 
 	public double getNumMoves() {
@@ -123,44 +128,44 @@ public class JumboParticle extends NormalParticle {
 
 	public JumboParticle(double x, double y, int c) {
 		super(x, y, c);
-		this.myC = color(255, 0, 0);
+		this.c = color(255, 0, 0);
 	}
 
 	public void show() {
-		fill(this.myC);
-		ellipse((float)this.myX, (float)this.myY, 10, 10);
+		fill(this.c);
+		ellipse((float)this.x, (float)this.y, 10, 10);
 	}
 
 }
 
 public class OddballParticle implements Particle {
 
-	public double myX, myY;
-	public int myC, numMoves;
+	public double x, y;
+	public int c, numMoves;
 
 	public OddballParticle(double x, double y, int c) {
-		this.myX = x;
-		this.myY = y;
-		this.myC = color(255,255,255);
+		this.x = x;
+		this.y = y;
+		this.c = color(255,255,255);
 	}
 
 	public void show() {
-		fill(this.myC);
-		ellipse((float)this.myX, (float)this.myY, 7, 7);
+		fill(this.c);
+		ellipse((float)this.x, (float)this.y, 7, 7);
 	}
 
 	public void move() {
-		this.myX += (int)(Math.random()*10-5);
-		this.myY += (int)(Math.random()*10-5);
+		this.x += (int)(Math.random()*10-5);
+		this.y += (int)(Math.random()*10-5);
 		this.numMoves++;
 	}
 
-	public double rX() {
-		return this.myX;
+	public double getX() {
+		return this.x;
 	}
 
-	public double rY() {
-		return this.myY;
+	public double getY() {
+		return this.y;
 	}
 
 	public double getNumMoves() {
@@ -168,6 +173,7 @@ public class OddballParticle implements Particle {
 	}
 }
 
+// Spawns the particles
 public void addParticles(double x, double y, int c) {
 
 	for (int i = 0; i < NUM_NORM_PARTICLES; i++) {
@@ -182,7 +188,7 @@ public void addParticles(double x, double y, int c) {
 		particles.add(new OddballParticle(x,y,c));
 	}
 }
-  public void settings() { 	size(800,800); }
+  public void settings() { 	size(600,600); }
   static public void main(String[] passedArgs) {
     String[] appletArgs = new String[] { "Starfield" };
     if (passedArgs != null) {
